@@ -41,8 +41,8 @@ from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
 
-#TODO 1: initialize spark
-#SparkContext
+conf = SparkConf().setAppName("ds-for-telco")
+sc = SparkContext(conf=conf)
 sqlContext = SQLContext(sc)
 schema = StructType([     StructField("state", StringType(), True),     StructField("account_length", DoubleType(), True),     StructField("area_code", StringType(), True),     StructField("phone_number", StringType(), True),     StructField("intl_plan", StringType(), True),     StructField("voice_mail_plan", StringType(), True),     StructField("number_vmail_messages", DoubleType(), True),     StructField("total_day_minutes", DoubleType(), True),     StructField("total_day_calls", DoubleType(), True),     StructField("total_day_charge", DoubleType(), True),     StructField("total_eve_minutes", DoubleType(), True),     StructField("total_eve_calls", DoubleType(), True),     StructField("total_eve_charge", DoubleType(), True),     StructField("total_night_minutes", DoubleType(), True),     StructField("total_night_calls", DoubleType(), True),     StructField("total_night_charge", DoubleType(), True),     StructField("total_intl_minutes", DoubleType(), True),     StructField("total_intl_calls", DoubleType(), True),     StructField("total_intl_charge", DoubleType(), True),     StructField("number_customer_service_calls", DoubleType(), True),     StructField("churned", StringType(), True)])
 
@@ -55,7 +55,8 @@ churn_data = sqlContext.read     .format('com.databricks.spark.csv')     .load('
 
 count = churn_data.count()
 voice_mail_plans = churn_data.filter(churn_data.voice_mail_plan == " yes").count()
-#TODO 2: find and count all churned customers
+churned_customers = churn_data.filter(churn_data.churned == " True.").count()
+
 "total: %d, voice mail plans: %d, churned customers: %d " % (count, voice_mail_plans, churned_customers)
 
 
@@ -134,7 +135,7 @@ sb.distplot(sample_data['number_customer_service_calls'], kde=False)
 # [BoxPlot docs](http://stanford.edu/~mwaskom/software/seaborn/generated/seaborn.boxplot.html)
 
 
-#TODO 3: do a boxplot x = churned, y=number_customer_service_calls for sample_data
+sb.boxplot(x="churned", y="number_customer_service_calls", data=sample_data)
 
 
 # # Joint Distributions
